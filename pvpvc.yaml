@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: bw-data
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: nfs-server.default.svc.cluster.local
+    path: "/bw-data"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bw-data
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 20Gi

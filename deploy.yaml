@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bitwarden
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      role: bitwarden
+  template:
+    metadata:
+      labels:
+        role: bitwarden
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: bitwarden
+          image: vaultwarden/server:1.30.3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+          volumeMounts:
+            # name must match the volume name below
+            - name: bw-data
+              mountPath: "/data/"
+      volumes:
+        - name: bw-data
+          persistentVolumeClaim:
+            claimName: bw-data

@@ -1,0 +1,24 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bitwarden
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: bitwarden.boeing.internal.cloudgenius.app
+      http:
+        paths:
+          - backend:
+              service:
+                name: bitwarden
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - "bitwarden.boeing.internal.cloudgenius.app"
+      secretName: bitwarden-tls
